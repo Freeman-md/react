@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import TodoForm from "./components/TodoForm";
 
 type Todo = {
@@ -13,22 +13,6 @@ function App() {
   useEffect(() => {
     console.log("todos have changed", todos);
   }, [todos]);
-
-  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.target as HTMLFormElement;
-    const input = form.querySelector("input");
-    const todoText = input?.value.trim();
-
-    if (todoText) {
-      addTodo(todoText);
-
-      if (input) {
-        input.value = "";
-      }
-    }
-  };
 
   const addTodo = (text: string) => {
     setTodos((prev) => [
@@ -115,7 +99,7 @@ function App() {
           )}
         </section>
 
-        <TodoForm handleFormSubmit={handleFormSubmit} />
+        <TodoForm addTodo={addTodo} />
       </section>
     </main>
   );

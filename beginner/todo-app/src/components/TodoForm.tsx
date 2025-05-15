@@ -1,12 +1,29 @@
 import type { FormEvent } from "react"
 
 type TodoFormProps = {
-    handleFormSubmit: (event: FormEvent<HTMLFormElement>) => void
+    addTodo: (text: string) => void
 }
 
 export default function TodoForm({
-    handleFormSubmit
+    addTodo
 } : TodoFormProps) {
+    
+    const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    
+        const form = event.target as HTMLFormElement;
+        const input = form.querySelector("input");
+        const todoText = input?.value.trim();
+    
+        if (todoText) {
+          addTodo(todoText);
+    
+          if (input) {
+            input.value = "";
+          }
+        }
+      };
+
     return (
         <section id="todo-form" className="w-full place-self-end">
           <form className="w-full group" onSubmit={handleFormSubmit}>
