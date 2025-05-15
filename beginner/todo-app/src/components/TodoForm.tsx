@@ -1,13 +1,13 @@
 import type { FormEvent } from "react"
 
 type TodoFormProps = {
-    addTodo: (text: string) => void
+    onAddTodo: (text: string) => void
 }
 
 export default function TodoForm({
-    addTodo
+    onAddTodo
 } : TodoFormProps) {
-    
+
     const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     
@@ -16,7 +16,7 @@ export default function TodoForm({
         const todoText = input?.value.trim();
     
         if (todoText) {
-          addTodo(todoText);
+          onAddTodo(todoText);
     
           if (input) {
             input.value = "";

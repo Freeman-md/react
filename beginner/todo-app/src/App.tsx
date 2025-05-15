@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TodoForm from "./components/TodoForm";
+import TodoItem from "./components/TodoItem";
 
-type Todo = {
+export type Todo = {
   id: number;
   text: string;
   isComplete: boolean;
@@ -25,17 +26,17 @@ function App() {
     ]);
   };
 
-  const removeTodo = (id: number) => {
+  const removeTodo = useCallback((id: number) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
-  };
+  }, []);
 
-  const toggleTodo = (id: number) => {
+  const toggleTodo = useCallback((id: number) => {
     setTodos((prev) =>
       prev.map((todo) =>
         todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
       )
     );
-  };
+  }, []);
 
   return (
     <main className="w-dvw h-dvh align-middle pt-10 pb-20">
@@ -46,52 +47,7 @@ function App() {
           {todos.length > 0 ? (
             <div className="space-y-4 my-1">
               {todos.map((todo) => (
-                <div
-                  key={todo.id}
-                  className="w-full flex justify-between items-center"
-                >
-                  <label className="text-lg flex space-x-4 items-center peer">
-                    <input
-                      type="checkbox"
-                      name={todo.text}
-                      defaultChecked={todo.isComplete}
-                      onChange={() => toggleTodo(todo.id)}
-                      className="sr-only"
-                    />
-                    <span
-                      className={`h-5 w-5 flex items-center justify-center rounded border-2 border-gray-400 transition 
-    ${
-      todo.isComplete ? "bg-gray-700 border-gray-700 !text-white" : "bg-white"
-    }`}
-                    >
-                      {todo.isComplete && <span className="text-sm">✔</span>}
-                    </span>
-                    <span
-                      className={`${
-                        todo.isComplete ? "line-through text-gray-500" : ""
-                      }`}
-                    >
-                      {todo.text}
-                    </span>
-                  </label>
-
-                  <button
-                    onClick={() => removeTodo(todo.id)}
-                    className="peer-has-checked:hidden cursor-pointer shrink-0 rounded p-1 bg-gray-200 transition hover:bg-gray-400 focus:ring focus:ring-offset-2 focus:ring-gray-400 mr-1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                <TodoItem key={todo.id} todo={todo} onToggleTodo={toggleTodo} onRemoveTodo={removeTodo} />
               ))}
             </div>
           ) : (
@@ -99,7 +55,7 @@ function App() {
           )}
         </section>
 
-        <TodoForm addTodo={addTodo} />
+        <TodoForm onAddTodo={addTodo} />
       </section>
     </main>
   );
