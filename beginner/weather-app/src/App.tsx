@@ -38,6 +38,8 @@ function App() {
         }
 
         const weatherData: WeatherResponse = await response.json();
+
+        console.log(weatherData)
         setWeatherInfo(weatherData);
       } catch (err: unknown) {
         if (err instanceof Error) {
