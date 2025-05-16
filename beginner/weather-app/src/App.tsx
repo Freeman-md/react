@@ -2,14 +2,14 @@ import { Icon } from "@iconify/react";
 import WeatherContent from "@/components/WeatherContent";
 import { useCallback, useState, type FormEvent } from "react";
 import type { WeatherResponse } from "@/types/weather";
+import { useFetch } from "./hooks/useFetch";
 
 function App() {
   const apiBaseUrl = import.meta.env.VITE_WEATHER_API_URL;
   const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { loading, error, execute } = useFetch<WeatherResponse>();
   const [weatherInfo, setWeatherInfo] = useState<WeatherResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFormSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -21,37 +21,17 @@ function App() {
 
       if (!query) return;
 
-      setIsLoading(true);
-      setError(null);
       setWeatherInfo(null);
 
-      try {
-        const response = await fetch(
-          `${apiBaseUrl}/current.json?key=${apiKey}&q=${query}`
-        );
+      const weatherData = await execute(
+        `${apiBaseUrl}/current.json?key=${apiKey}&q=${query}`
+      );
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.error?.message || "Failed to fetch weather."
-          );
-        }
-
-        const weatherData: WeatherResponse = await response.json();
-
-        console.log(weatherData)
+      if (weatherData) {
         setWeatherInfo(weatherData);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message || "Something went wrong");
-        } else {
-          setError("Something went wrong");
-        }
-      } finally {
-        setIsLoading(false);
       }
     },
-    [apiBaseUrl, apiKey]
+    [apiBaseUrl, apiKey, execute]
   );
 
   return (
@@ -81,7 +61,11 @@ function App() {
         </form>
       </header>
 
-      <WeatherContent isLoading={isLoading} error={error} weatherInfo={weatherInfo} />
+      <WeatherContent
+        isLoading={loading}
+        error={error}
+        weatherInfo={weatherInfo}
+      />
     </main>
   );
 }
