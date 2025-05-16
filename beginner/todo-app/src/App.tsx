@@ -11,13 +11,12 @@ export type Todo = {
 function App() {
   const [todos, setTodos] = useState<Array<Todo>>(() => {
     const stored = localStorage.getItem("todos");
-  return stored ? JSON.parse(stored) : [];
+    return stored ? JSON.parse(stored) : [];
   });
 
   useEffect(() => {
-    console.log('todos changed', todos)
-    localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos])
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = (text: string) => {
     setTodos((prev) => [
@@ -51,7 +50,12 @@ function App() {
           {todos.length > 0 ? (
             <div className="space-y-4 my-1">
               {todos.map((todo) => (
-                <TodoItem key={todo.id} todo={todo} onToggleTodo={toggleTodo} onRemoveTodo={removeTodo} />
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onToggleTodo={toggleTodo}
+                  onRemoveTodo={removeTodo}
+                />
               ))}
             </div>
           ) : (
